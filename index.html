@@ -73,42 +73,52 @@ function makePreset(kind){
  map(40,0,['G.G.G.G.','GGGGGGGG','DSSSSSSD','DBBBBBBD','D......D','D......D','D......D','DDDDDDDD']);
  map(32,8,['DDDDDDDD','DGGGGGGD','DBBBBBBD','DBLLLLBD','DB....BD','DB....BD','DB....BD','DDDDDDDD']);
  map(48,8,['DDDDDDDD','DGGGGGGD','DBBBBBBD','DBLLLLBD','DB....BD','DB....BD','DB....BD','DDDDDDDD']);
- // BODY front: dark royal tunic, bright shoulder line, chest plate and belt.
+ // BODY FRONT: layered medieval surcoat, breastplate, shoulder straps and belt.
  map(20,20,[
-  'GGGGGGGG','GSSSSSSG','SBBBBBBS','SLLLLLLS',
-  'SBBJJ BBS','SBBBBBBS','SSBBBBSS','DDGGGGDD',
-  'DDSSSSDD','DDSSSSDD','DDSSSSDD','DDDDDDDD'
+  'GGGGGGGG','GSSSSSSG','SBBBBBBS','SLLBBLLS',
+  'SBJJJJBS','SBBJJ BBS','SBBBBBBS','DDGGGGDD',
+  'DDSSSSDD','DGGSSGGD','DDSSSSDD','DDDDDDDD'
  ].map(r=>r.replace('JJ B','JJBB')));
- // Back: full-length clan cape with gold piping and central stripe.
+ // Fine plate edging, rivets, crossed leather harness and a heavy waist buckle.
+ px(20,22,1,5,p.G);px(27,22,1,5,p.G);
+ px(22,23,1,3,p.G);px(25,23,1,3,p.G);
+ px(23,24,2,1,p.J);px(23,25,2,1,p.W);
+ px(23,27,2,1,p.G);px(23,28,2,2,p.G);px(24,28,1,1,p.J);
+ px(21,30,2,1,p.C);px(25,30,2,1,p.C);
+ // BACK: royal cape with embroidered center panel, piping and clasp.
  map(32,20,[
-  'GGGGGGGG','CCCCCCCC','CCLCCLCC','CCLCCLCC',
-  'CCLCCLCC','CCJCCJCC','CCLCCLCC','CCLCCLCC',
-  'CCLCCLCC','CCLCCLCC','CCLCCLCC','GGGGGGGG'
+  'GGGGGGGG','CCCCCCCC','CLLLLLLC','CLCCLCCL',
+  'CLCCLCCL','CLCCJCCL','CLCCLCCL','CLCCLCCL',
+  'CLCCLCCL','CLCCLCCL','CCCCCCCC','GGGGGGGG'
  ]);
  // FULL ARM UV MAPS: paint every face of both arms, not just the front.
  // Each arm has top, bottom, inner, front, outer and back texture faces.
- function armFace(x,y,w,h,base,highlight,shadow){
-  px(x,y,w,h,base);
-  // Narrow vertical highlights give the armor a rounded, 3D sleeve look.
-  if(w>=3)px(x+1,y+3,1,h-6,highlight);
-  px(x,y, w,2,p.G);             // shoulder rim
-  px(x,y+h-2,w,2,p.D);          // dark gauntlet edge
-  if(h>=8){px(x,y+2,w,1,shadow);px(x,y+h-4,w,1,shadow);}
+ function armFace(x,y,w,h,base,highlight,shadow,face,overlay){
+  // Padded sleeve/chainmail underlayer, visible in the gaps of the plate.
+  px(x,y,w,h,overlay?highlight:base);
+  for(let r=2;r<5;r++)for(let col=0;col<w;col++)if((r+col)%2===0)px(x+col,y+r,1,1,p.C);
+  // Shoulder lame, riveted bracer and articulated elbow.
+  px(x,y,w,1,p.G);px(x,y+1,w,1,p.D);
+  px(x,y+2,1,1,p.G);px(x+w-1,y+2,1,1,p.G);
+  px(x+1,y+3,w-2,2,base);
+  px(x,y+5,w,1,p.C);px(x+1,y+5,w-2,1,p.G);
+  px(x,y+6,w,1,p.D);
+  // Forearm plate with a raised central ridge.
+  px(x,y+7,w,1,p.G);px(x,y+8,1,2,p.D);px(x+w-1,y+8,1,2,p.D);
+  if(w>2){px(x+1,y+8,1,2,highlight);px(x+2,y+8,1,2,base);}
+  // Leather wrist wrap and metal cuff.
+  px(x,y+10,w,1,p.C);px(x,y+11,w,1,p.G);
+  if(face===1||face===3){px(x,y+4,w,1,p.D);px(x+1,y+9,w-2,1,p.C);}
+  px(x,y+2,1,1,p.G);px(x+w-1,y+2,1,1,p.G);
  }
  function paintArm(xTop,yTop,xSide,ySide,overlay=false){
-  const base=overlay?p.B:p.S, hi=overlay?p.L:p.B, shade=overlay?p.D:p.D;
-  // Top and underside surfaces (4 x 4).
-  px(xTop,yTop,4,4,base);px(xTop+1,yTop,2,1,p.G);px(xTop,yTop+3,4,1,shade);
-  px(xTop+4,yTop,4,4,shade);px(xTop+5,yTop,2,1,p.G);
-  // Four long faces, each 4 x 12: all sides receive the clan armor colors.
+  const base=overlay?p.B:p.S,hi=overlay?p.L:p.B;
+  // Riveted shoulder cap on top and mail/leather underside.
+  px(xTop,yTop,4,4,base);px(xTop,yTop,4,1,p.G);px(xTop+1,yTop+1,2,2,hi);
+  px(xTop+4,yTop,4,4,p.D);px(xTop+4,yTop,4,1,p.G);px(xTop+5,yTop+1,2,2,p.C);
   for(let face=0;face<4;face++){
    const fx=xSide+face*4;
-   armFace(fx,ySide,4,12,base,hi,shade);
-   // A bright clan stripe runs down each face, with a small jewel at the shoulder.
-   px(fx+1,ySide+3,2,1,hi);
-   px(fx+1,ySide+4,2,5,base);
-   px(fx+1,ySide+9,2,1,hi);
-   px(fx,ySide+2,1,1,p.G);px(fx+3,ySide+2,1,1,p.G);
+   armFace(fx,ySide,4,12,base,hi,p.D,face,overlay);
   }
  }
  // Base sleeves: right arm at y=16..31, left arm at y=48..63.
@@ -160,17 +170,22 @@ function makePreset(kind){
  // Raised outer-layer armor on both legs.
  paintLeg(4,32,0,36,true);
  paintLeg(4,48,0,52,true);
- // Outer chestplate and cape details. Keep these shapes transparent outside their trim.
+ // OUTER TORSO: raised medieval breastplate with engraved edging and heraldic center.
  map(20,36,[
-  'GGGGGGGG','G......G','D......D','D..JJ..D',
-  'D.JJJJ.D','D..JJ..D','D......D','D......D',
-  'DDGGGGDD','DDDDDDDD','DDDDDDDD','GGGGGGGG'
+  'GGGGGGGG','GDDLLDDG','DGG..GGD','D.GJJG.D',
+  'D.GJJG.D','DGGJJGGD','D.GJJG.D','D..GG..D',
+  'DDGGGGDD','DGGGGGGD','DGGGGGGD','GGGGGGGG'
  ]);
+ // Back cape overlay: gold border, shoulder mantle, stitched vertical panels.
  map(32,36,[
-  'GGGGGGGG','C......C','C......C','C......C',
-  'C..JJ..C','C......C','C......C','C......C',
-  'C......C','C......C','C......C','GGGGGGGG'
+  'GGGGGGGG','GCCCCCCG','GCLLLLCG','GCCJJCCG',
+  'GCCLLCCG','GCCJJCCG','GCCLLCCG','GCCLLCCG',
+  'GCCLLCCG','GCCLLCCG','GCCCCCCG','GGGGGGGG'
  ]);
+ // Shoulder pauldrons and rivets over the front-facing torso corners.
+ px(20,37,2,2,p.G);px(26,37,2,2,p.G);
+ px(21,39,1,2,p.J);px(26,39,1,2,p.J);
+ px(20,45,1,2,p.G);px(27,45,1,2,p.G);
  // Clan crest: each kingdom has its own clear heraldic mark.
  const crests={
   blue:['...J....','..JJJ...','.JJJJJ..','..JJJ...','...J....'],
