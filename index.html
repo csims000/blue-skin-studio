@@ -176,12 +176,26 @@ function makePreset(kind){
   'D.GJJG.D','DGGJJGGD','D.GJJG.D','D..GG..D',
   'DDGGGGDD','DGGGGGGD','DGGGGGGD','GGGGGGGG'
  ]);
- // Back cape overlay: gold border, shoulder mantle, stitched vertical panels.
+ // Back cape overlay: royal mantle, stitched panels and a bright clan crest.
  map(32,36,[
   'GGGGGGGG','GCCCCCCG','GCLLLLCG','GCCJJCCG',
   'GCCLLCCG','GCCJJCCG','GCCLLCCG','GCCLLCCG',
   'GCCLLCCG','GCCLLCCG','GCCCCCCG','GGGGGGGG'
  ]);
+ // Large, unmistakable heraldic symbols centered on the BACK of each cape.
+ // Each mark uses the kingdom's jewel color with a gold outline.
+ const backCrests={
+  blue:['.GG..GG.','GJJGGJJG','GJJJJJJG','.GJJJJG.','..GJJG..','...GG...'],
+  red:['G...G...','GG.GG.GG','.GGGGGG.','..GJJG..','.GJGGJG.','GJ....JG'],
+  emerald:['..GGGG..','.GJJJJG.','GJJJJJJG','GJJJJJJG','.GJJJJG.','..GGGG..'],
+  shadow:['..GGGG..','.GJJJJG.','GJJ..JJG','GJJ..JJG','.GJJJJG.','..GGGG..'],
+  frost:['...G....','..GJG...','GGGJJGGG','..GJG...','...G....','..GJG...'],
+  gold:['..GJJG..','.GJJJJG.','GJJGGJJG','GJJGGJJG','.GJJJJG.','..GJJG..']
+ };
+ map(33,39,backCrests[kind]||backCrests.blue);
+ // Jewel center and tiny gold clasps finish the cape insignia.
+ px(35,41,2,1,p.W);px(35,42,2,1,p.J);
+ px(32,37,1,1,p.G);px(39,37,1,1,p.G);
  // Shoulder pauldrons and rivets over the front-facing torso corners.
  px(20,37,2,2,p.G);px(26,37,2,2,p.G);
  px(21,39,1,2,p.J);px(26,39,1,2,p.J);
