@@ -22,13 +22,13 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:16px;ma
 @media(max-width:560px){.nav{display:none}main{padding:36px 14px 48px}.topbar{padding:12px 16px}.hero{margin-bottom:23px}.panel-inner,.section-panel{padding:18px}.preview-head{padding:19px 19px 0}.preview-stage{margin:0 12px;min-height:290px}.preview canvas{height:285px}.preview-tools{padding:12px 18px}.meta{margin:0 18px 17px}.preset-grid{grid-template-columns:repeat(2,minmax(0,1fr))}footer{align-items:flex-start;flex-direction:column}}
 </style></head><body>
 <header class="topbar"><a class="brand" href="#"><div class="mark">A</div><div><div class="brand-name">ASTRA</div><div class="brand-sub">SKIN STUDIO / CREATION LAB</div></div></a><nav class="nav"><a href="#studio">Studio</a><a href="#gallerySection">Skin gallery</a><a href="#yourSkins">Your skins</a></nav><div class="status-pill"><span class="status-dot"></span> FREE CREATION STUDIO</div></header>
-<main><section class="hero"><div><div class="eyebrow">MINECRAFT CHARACTER WORKSHOP</div><h1>Build a skin that<br><span class="gradient">looks like you.</span></h1><p>Design your character, inspect every angle, and take your creation into Minecraft. Your files stay on your device — no account, no uploads, no cost.</p></div><div class="hero-side"><strong>ASTRA / 01</strong><span>CREATE · PREVIEW · EXPORT</span></div></section>
+<main><section class="hero"><div><div class="eyebrow">MINECRAFT CHARACTER WORKSHOP</div><h1>Forge your royal<br><span class="gradient">kingdom legend.</span></h1><p>Create a crowned knight for your clan, inspect every angle, and take your royal champion into Minecraft. Your files stay on your device — no account, no uploads, no cost.</p></div><div class="hero-side"><strong>ASTRA / 01</strong><span>CREATE · PREVIEW · EXPORT</span></div></section>
 <div class="workspace" id="studio"><section class="panel"><div class="panel-inner"><div class="panel-head"><div class="step"><span class="step-no">01</span><h2>Start your creation</h2></div><span class="micro">SKIN INPUT</span></div>
 <button class="drop" id="chooseSkin" type="button"><span class="upload-icon">↑</span><strong>Choose a Minecraft skin PNG</strong><small>Drop into your workflow with a 64×64, 64×32 legacy, 128×128, or supported square PNG.</small></button><input id="file" type="file" accept="image/png">
 <div class="field"><label for="skinName">CHARACTER NAME</label><input id="skinName" maxlength="32" value="Blue Clan Knight King" placeholder="Name your skin"></div><div class="field"><label for="model">PLAYER MODEL</label><select id="model"><option value="classic">Classic / Steve — wide arms</option><option value="slim">Slim / Alex — narrow arms</option></select></div>
 <div class="actions"><button class="btn" id="png" disabled>↓ Export PNG</button><button class="btn gold" id="pack" disabled>✦ Create Skin Pack</button></div><p class="note">Create Skin Pack downloads a .mcpack file. PNG export saves the texture. Large supported square images are resized to 128×128; Minecraft Education may require 64×64, and pack support can vary by version.</p></div></section>
 <section class="panel preview-panel"><div class="preview-head"><div class="panel-head"><div class="step"><span class="step-no">02</span><h2>Character preview</h2></div><span class="micro">LIVE 3D VIEW</span></div></div><div class="preview-stage" id="preview"><canvas id="skin3d"></canvas><div class="empty" id="previewEmpty">Your character will appear here. Choose a skin or select a studio preset to begin.</div></div><div class="preview-tools"><span class="preview-hint">Drag to rotate · Scroll to zoom</span><button class="rotate-btn" id="rotateToggle" type="button" disabled>Rotation: On</button></div><div class="meta"><span id="status">NO SKIN LOADED</span><span id="dimensions">—</span></div></section></div>
-<section class="panel section" id="gallerySection"><div class="section-panel"><div class="section-heading"><div><h2>Studio skin gallery</h2><p>Choose a starting design. Each preset loads into the character preview and can be exported.</p></div><span class="section-tag">03 / PRESETS</span></div><div class="preset-grid" id="presetGrid"><button class="preset" data-preset="blue"><div class="swatch" style="--a:#135da8;--b:#63b9ff">♛</div><strong>Blue Clan King</strong><small>Royal blue and gold</small></button><button class="preset" data-preset="red"><div class="swatch" style="--a:#8c1e2d;--b:#ed6a45">⚔</div><strong>Red Warrior</strong><small>Crimson battle armor</small></button><button class="preset" data-preset="emerald"><div class="swatch" style="--a:#075d49;--b:#53c99b">◆</div><strong>Emerald Ranger</strong><small>Forest green gear</small></button><button class="preset" data-preset="shadow"><div class="swatch" style="--a:#24283d;--b:#716d9c">☾</div><strong>Shadow Rogue</strong><small>Dark stealth outfit</small></button><button class="preset" data-preset="frost"><div class="swatch" style="--a:#5b9fb8;--b:#d9f5ff">❄</div><strong>Frost Guard</strong><small>Ice blue armor</small></button><button class="preset" data-preset="gold"><div class="swatch" style="--a:#91621a;--b:#f6d66e">★</div><strong>Golden Knight</strong><small>Gold and charcoal</small></button></div></div></section>
+<section class="panel section" id="gallerySection"><div class="section-panel"><div class="section-heading"><div><h2>Studio skin gallery</h2><p>Choose a starting design. Each preset loads into the character preview and can be exported.</p></div><span class="section-tag">03 / PRESETS</span></div><div class="preset-grid" id="presetGrid"><button class="preset" data-preset="blue"><div class="swatch" style="--a:#135da8;--b:#63b9ff">♛</div><strong>VEYRA Blue King</strong><small>Crown · blue cape · sapphire</small></button><button class="preset" data-preset="red"><div class="swatch" style="--a:#8c1e2d;--b:#ed6a45">⚔</div><strong>VAZOR Red King</strong><small>Crown · crimson cape · ruby</small></button><button class="preset" data-preset="emerald"><div class="swatch" style="--a:#075d49;--b:#53c99b">◆</div><strong>Emerald King</strong><small>Crown · emerald cape · jewel</small></button><button class="preset" data-preset="shadow"><div class="swatch" style="--a:#24283d;--b:#716d9c">☾</div><strong>SHADE Shadow King</strong><small>Dark crown · royal cape</small></button><button class="preset" data-preset="frost"><div class="swatch" style="--a:#5b9fb8;--b:#d9f5ff">❄</div><strong>NEXUS Frost King</strong><small>Ice crown · silver armor</small></button><button class="preset" data-preset="gold"><div class="swatch" style="--a:#91621a;--b:#f6d66e">★</div><strong>Golden King</strong><small>Gold crown · royal armor</small></button></div></div></section>
 <section class="panel section" id="yourSkins"><div class="section-panel"><div class="section-heading"><div><h2>Your session gallery</h2><p>Skins selected during this visit appear here.</p></div><span class="section-tag">04 / SESSION</span></div><div class="gallery-list" id="gallery"><span class="chip">Your uploaded and selected skins appear here while this page stays open.</span></div></div></section>
 <footer><span>ASTRA SKIN STUDIO · CREATION LAB</span><span>LOCAL PROCESSING · NO ACCOUNT REQUIRED</span></footer></main>
 <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script><script>
@@ -39,52 +39,64 @@ async function loadSkinFile(f,label){if(!f)return;if(f.type!=='image/png'){alert
 document.getElementById('chooseSkin').addEventListener('click',()=>fileInput.click());fileInput.addEventListener('change',async()=>{const f=fileInput.files?.[0];if(f)await loadSkinFile(f,f.name)});
 function makePreset(kind){
  const c=document.createElement('canvas');c.width=64;c.height=64;const x=c.getContext('2d');
- const P={
- blue:['#174d86','#4ca7ed','#0b2749','#f0cb67','#72d7ff','#c88f68','#34251f'],
- red:['#8d2634','#e45a50','#401421','#e1c5a4','#ff9b62','#c58b68','#39251e'],
- emerald:['#17634e','#58c69a','#0b352d','#d7bd72','#9be58c','#b97e59','#34251f'],
- shadow:['#303447','#777c9d','#121522','#b9b9d1','#9c8cff','#b98468','#201d28'],
- frost:['#5b9db7','#d6f7ff','#294d68','#f1fdff','#7ee8ff','#c99170','#554333'],
- gold:['#9a6c20','#f0cb62','#332719','#ffe69a','#fff0bd','#c58b68','#34251f']
- }[kind]||['#174d86','#4ca7ed','#0b2749','#f0cb67','#72d7ff','#c88f68','#34251f'];
- const [b,l,d,m,a,s,h]=P, R=(X,Y,W,H,C)=>{x.fillStyle=C;x.fillRect(X,Y,W,H)}, F=(X,Y,W,H,C)=>{R(X,Y,W,H,C);R(X,Y,W,1,l);R(X,Y+H-1,W,1,d)};
- // Head, hair and face details
- F(8,8,8,8,s);F(24,8,8,8,s);F(0,8,8,8,d);F(16,8,8,8,d);
- R(8,8,8,3,h);R(8,8,2,8,h);R(14,8,2,8,h);R(9,12,2,1,'#26364a');R(13,12,2,1,'#26364a');R(10,15,4,1,'#754b3b');
- R(8,0,8,8,d);R(8,0,8,2,m);R(16,0,8,8,d);R(24,0,8,8,d);
- // Main body UV faces
- F(20,20,8,12,b);F(32,20,8,12,d);F(16,20,4,12,d);F(28,20,4,12,l);
- F(44,20,4,12,b);F(52,20,4,12,d);F(40,20,4,12,l);F(48,20,4,12,d);
- F(4,20,4,12,d);F(12,20,4,12,d);F(0,20,4,12,b);F(8,20,4,12,b);
- F(36,52,4,12,b);F(44,52,4,12,d);F(32,52,4,12,l);F(40,52,4,12,d);
- F(20,52,4,12,d);F(28,52,4,12,d);F(16,52,4,12,b);F(24,52,4,12,b);
- // Detailed chest plate, crest, belt and pauldrons
- R(20,20,8,2,m);R(20,22,1,7,d);R(27,22,1,7,d);R(21,23,6,5,l);R(22,24,4,3,b);R(23,24,2,3,a);
- R(20,28,8,2,d);R(20,30,8,2,m);R(23,30,2,2,d);
+ const palettes={
+ blue:{b:'#174d86',l:'#58b7ff',d:'#0a2748',m:'#f3ce70',a:'#75e0ff',s:'#c99170',h:'#34251f',cape:'#102f62',gem:'#64eaff'},
+ red:{b:'#8c2434',l:'#ef6958',d:'#401421',m:'#e7c27b',a:'#ffad70',s:'#c58b68',h:'#34231e',cape:'#541824',gem:'#ffcf72'},
+ emerald:{b:'#12614b',l:'#62d0a0',d:'#08372c',m:'#e7c66e',a:'#a4ef9c',s:'#bb805d',h:'#30231d',cape:'#0b4436',gem:'#9dffc0'},
+ shadow:{b:'#303449',l:'#8589a8',d:'#111522',m:'#c5b8df',a:'#aa91ff',s:'#b98268',h:'#211d29',cape:'#171827',gem:'#c7a6ff'},
+ frost:{b:'#579bb8',l:'#e0f8ff',d:'#294c68',m:'#f5ffff',a:'#8beaff',s:'#c99270',h:'#594534',cape:'#d4eff8',gem:'#8df5ff'},
+ gold:{b:'#91651f',l:'#f4d16b',d:'#38291a',m:'#fff0a5',a:'#fff0bd',s:'#c58b68',h:'#35251e',cape:'#60451b',gem:'#fff1a0'}
+ };
+ const p=palettes[kind]||palettes.blue,{b,l,d,m,a,s,h,cape,gem}=p;
+ const R=(X,Y,W,H,C)=>{x.fillStyle=C;x.fillRect(X,Y,W,H)};
+ const face=(X,Y,W,H,C)=>{R(X,Y,W,H,C);R(X,Y,W,1,l);R(X,Y+H-1,W,1,d)};
+ // Base head, face and hair
+ face(8,8,8,8,s);face(24,8,8,8,s);R(8,8,8,3,h);R(8,8,2,8,h);R(14,8,2,8,h);
+ R(9,12,2,1,'#26364a');R(13,12,2,1,'#26364a');R(10,15,4,1,'#754b3b');
+ // Crowned helmet: gold band, raised points and central jewel on the head overlay
+ R(40,8,8,8,d);R(40,8,8,2,m);R(40,10,8,2,b);R(40,12,8,4,d);
+ R(40,8,1,4,m);R(47,8,1,4,m);R(41,7,2,2,m);R(44,7,2,2,m);
+ R(42,9,1,2,gem);R(43,9,2,2,m);R(44,9,1,2,gem);
+ // Helmet side and top trim
+ R(32,8,8,8,d);R(32,8,8,2,m);R(48,8,8,8,d);R(48,8,8,2,m);
+ R(40,0,8,8,d);R(40,0,8,2,m);R(41,2,6,2,b);R(42,3,4,2,gem);
+ // Torso base front/back and side faces
+ face(20,20,8,12,b);face(32,20,8,12,cape);face(16,20,4,12,d);face(28,20,4,12,l);
+ face(44,20,4,12,b);face(52,20,4,12,d);face(40,20,4,12,l);face(48,20,4,12,d);
+ // Arms and legs
+ face(4,20,4,12,d);face(12,20,4,12,b);face(0,20,4,12,b);face(8,20,4,12,d);
+ face(36,52,4,12,b);face(44,52,4,12,d);face(32,52,4,12,l);face(40,52,4,12,d);
+ face(20,52,4,12,d);face(28,52,4,12,d);face(16,52,4,12,b);face(24,52,4,12,b);
+ // Royal chest plate with layered gold edging and clan jewel
+ R(20,20,8,2,m);R(20,22,1,7,d);R(27,22,1,7,d);R(21,23,6,5,l);
+ R(22,24,4,3,b);R(23,24,2,3,gem);R(22,28,4,1,m);R(20,30,8,2,m);
+ // Shoulder pauldrons, arm guards and gauntlets
  R(16,20,4,3,m);R(28,20,4,3,m);R(16,23,4,2,a);R(28,23,4,2,a);
  R(44,20,4,3,m);R(52,20,4,3,m);R(40,24,4,2,a);R(48,24,4,2,a);
- // Gauntlets, knee guards and boot trim
- R(44,28,4,2,m);R(52,28,4,2,m);R(4,26,4,2,a);R(12,26,4,2,a);
- R(0,29,4,3,d);R(8,29,4,3,d);R(4,30,4,2,m);R(12,30,4,2,m);
+ R(4,26,4,2,m);R(12,26,4,2,m);R(0,29,4,3,d);R(8,29,4,3,d);
+ R(4,30,4,2,m);R(12,30,4,2,m);
+ // Belt, royal clasp, greaves and boot trim
+ R(20,29,8,2,d);R(23,29,2,2,m);R(24,29,1,1,gem);
  R(16,52,4,2,m);R(24,52,4,2,m);R(20,58,4,2,a);R(28,58,4,2,a);
- // Outer layer overlays: helmet, mantle, shoulder caps, arm and leg guards
- R(40,8,8,8,d);R(40,8,8,2,m);R(40,10,8,2,b);R(40,12,8,2,d);R(40,14,8,2,m);
- R(32,8,8,8,d);R(48,8,8,8,d);R(56,8,8,8,b);
- R(20,36,8,12,d);R(20,36,8,2,m);R(21,38,6,7,b);R(22,39,4,4,l);R(23,40,2,2,a);R(20,46,8,2,m);
+ // Outer body armor and a flowing royal cape on the back
+ R(20,36,8,12,d);R(20,36,8,2,m);R(21,38,6,7,b);R(22,39,4,4,l);
+ R(23,40,2,2,gem);R(20,46,8,2,m);
+ R(32,36,8,12,cape);R(32,36,8,2,m);R(33,38,6,8,cape);
+ R(34,40,4,1,m);R(34,43,4,1,m);R(35,39,2,6,d);
  R(16,36,4,12,d);R(28,36,4,12,d);R(16,36,4,3,m);R(28,36,4,3,m);
  R(44,36,4,12,d);R(52,36,4,12,d);R(44,36,4,3,m);R(52,36,4,3,m);
  R(4,36,4,12,d);R(12,36,4,12,d);R(4,36,4,3,m);R(12,36,4,3,m);
  R(4,44,4,3,b);R(12,44,4,3,b);
- // Distinct clan insignias and signature armor details
- if(kind==='blue'){R(22,22,4,1,'#fff0a2');R(23,24,2,4,m);R(22,26,4,1,'#fff0a2');R(40,8,8,2,'#ffe69a');R(42,10,4,2,l);R(43,12,2,2,m);R(20,38,2,5,a);R(26,38,2,5,a)}
- else if(kind==='red'){R(20,22,8,2,a);R(22,24,4,5,'#641d29');R(23,25,2,3,m);R(40,10,8,2,a);R(42,12,4,2,l);R(20,38,8,2,a);R(44,24,4,3,d);R(52,24,4,3,d)}
- else if(kind==='emerald'){R(22,22,4,2,m);R(23,24,2,5,a);R(21,26,6,1,m);R(40,8,8,2,a);R(42,10,4,4,b);R(43,11,2,2,m);R(20,38,2,6,a);R(26,38,2,6,a)}
- else if(kind==='shadow'){R(8,8,8,4,d);R(9,12,6,2,a);R(22,22,4,2,a);R(23,24,2,5,d);R(40,8,8,8,'#171a29');R(42,10,4,2,l);R(43,13,2,1,a);R(20,38,8,2,l);R(44,24,4,3,a);R(52,24,4,3,a)}
- else if(kind==='frost'){R(20,22,8,2,m);R(22,24,4,5,d);R(23,24,2,4,a);R(40,8,8,2,m);R(42,10,4,4,a);R(20,38,8,2,m);R(16,22,4,3,l);R(28,22,4,3,l)}
- else if(kind==='gold'){R(20,22,8,2,a);R(22,24,4,5,d);R(23,24,2,4,b);R(40,8,8,2,a);R(42,10,4,4,b);R(43,12,2,2,d);R(20,38,8,2,a);R(16,22,4,3,b);R(28,22,4,3,b)}
+ // Distinct royal crests and crown jewels for each kingdom
+ if(kind==='blue'){R(23,24,2,4,'#fff0a2');R(22,26,4,1,'#fff0a2');R(42,9,4,2,'#fff0a2');R(35,40,2,4,a)}
+ else if(kind==='red'){R(22,23,4,2,m);R(23,25,2,4,'#6e1727');R(42,9,4,2,'#ffcf72');R(35,40,2,4,a)}
+ else if(kind==='emerald'){R(22,23,4,2,m);R(23,25,2,4,a);R(42,9,4,2,'#a4ef9c');R(35,40,2,4,l)}
+ else if(kind==='shadow'){R(22,23,4,2,a);R(23,25,2,4,d);R(42,9,4,2,'#d5c5ff');R(35,40,2,4,a)}
+ else if(kind==='frost'){R(22,23,4,2,m);R(23,25,2,4,a);R(42,9,4,2,'#ffffff');R(35,40,2,4,l)}
+ else if(kind==='gold'){R(22,23,4,2,a);R(23,25,2,4,m);R(42,9,4,2,'#ffffff');R(35,40,2,4,m)}
  return c;
 }
-presetGrid.addEventListener('click',async e=>{const btn=e.target.closest('[data-preset]');if(!btn)return;const kind=btn.dataset.preset;const names={blue:'Blue Clan King',red:'Red Warrior',emerald:'Emerald Ranger',shadow:'Shadow Rogue',frost:'Frost Guard',gold:'Golden Knight'};const canvas=makePreset(kind);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));nameInput.value=names[kind];const file=new File([blob],names[kind].replace(/ /g,'_')+'.png',{type:'image/png'});await loadSkinFile(file,names[kind]+' · Studio preset')});
+presetGrid.addEventListener('click',async e=>{const btn=e.target.closest('[data-preset]');if(!btn)return;const kind=btn.dataset.preset;const names={blue:'VEYRA Blue King',red:'VAZOR Red King',emerald:'Emerald King',shadow:'SHADE Shadow King',frost:'NEXUS Frost King',gold:'Golden King'};const canvas=makePreset(kind);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));nameInput.value=names[kind];const file=new File([blob],names[kind].replace(/ /g,'_')+'.png',{type:'image/png'});await loadSkinFile(file,names[kind]+' · Studio preset')});
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}pngBtn.addEventListener('click',()=>{if(skinBlob)download(skinBlob,cleanName(nameInput.value)+'.png')});
 function uuid(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})}function crc32(bytes){let c=-1;for(const b of bytes){c^=b;for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return(c^-1)>>>0}function u16(v){return[v&255,(v>>>8)&255]}function u32(v){return[v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]}
 function zipStore(files){const enc=new TextEncoder(),parts=[],central=[];let offset=0;for(const file of files){const name=enc.encode(file.name),data=typeof file.data==='string'?enc.encode(file.data):file.data,crc=crc32(data);const local=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...name,...data]);parts.push(local);const cd=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset),...name]);central.push(cd);offset+=local.length}const centralSize=central.reduce((n,x)=>n+x.length,0),end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(centralSize),...u32(offset),...u16(0)]);return new Blob([...parts,...central,end],{type:'application/zip'})}
