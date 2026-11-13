@@ -85,9 +85,41 @@ function makePreset(kind){
   'CCLCCLCC','CCJCCJCC','CCLCCLCC','CCLCCLCC',
   'CCLCCLCC','CCLCCLCC','CCLCCLCC','GGGGGGGG'
  ]);
- // Arms, both front faces, with shoulder caps and gauntlets.
- map(44,20,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG']);
- map(36,52,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG']);
+ // FULL ARM UV MAPS: paint every face of both arms, not just the front.
+ // Each arm has top, bottom, inner, front, outer and back texture faces.
+ function armFace(x,y,w,h,base,highlight,shadow){
+  px(x,y,w,h,base);
+  // Narrow vertical highlights give the armor a rounded, 3D sleeve look.
+  if(w>=3)px(x+1,y+3,1,h-6,highlight);
+  px(x,y, w,2,p.G);             // shoulder rim
+  px(x,y+h-2,w,2,p.D);          // dark gauntlet edge
+  if(h>=8){px(x,y+2,w,1,shadow);px(x,y+h-4,w,1,shadow);}
+ }
+ function paintArm(xTop,yTop,xSide,ySide,overlay=false){
+  const base=overlay?p.B:p.S, hi=overlay?p.L:p.B, shade=overlay?p.D:p.D;
+  // Top and underside surfaces (4 x 4).
+  px(xTop,yTop,4,4,base);px(xTop+1,yTop,2,1,p.G);px(xTop,yTop+3,4,1,shade);
+  px(xTop+4,yTop,4,4,shade);px(xTop+5,yTop,2,1,p.G);
+  // Four long faces, each 4 x 12: all sides receive the clan armor colors.
+  for(let face=0;face<4;face++){
+   const fx=xSide+face*4;
+   armFace(fx,ySide,4,12,base,hi,shade);
+   // A bright clan stripe runs down each face, with a small jewel at the shoulder.
+   px(fx+1,ySide+3,2,1,hi);
+   px(fx+1,ySide+4,2,5,base);
+   px(fx+1,ySide+9,2,1,hi);
+   px(fx,ySide+2,1,1,p.G);px(fx+3,ySide+2,1,1,p.G);
+  }
+ }
+ // Base sleeves: right arm at y=16..31, left arm at y=48..63.
+ paintArm(44,16,40,20,false);
+ paintArm(36,48,32,52,false);
+ // Outer-layer sleeves sit over the base and add raised shoulder guards and cuffs.
+ paintArm(44,32,40,36,true);
+ paintArm(52,48,48,52,true);
+ // Distinct gold shoulder plates on the visible front faces.
+ px(44,36,4,2,p.G);px(45,38,2,1,p.J);
+ px(52,52,4,2,p.G);px(53,54,2,1,p.J);
  // Legs: armored greaves, knee guards, and dark boots.
  map(4,20,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG','DDDD']);
  map(20,52,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG','DDDD']);
