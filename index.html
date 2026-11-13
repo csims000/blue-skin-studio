@@ -120,9 +120,31 @@ function makePreset(kind){
  // Distinct gold shoulder plates on the visible front faces.
  px(44,36,4,2,p.G);px(45,38,2,1,p.J);
  px(52,52,4,2,p.G);px(53,54,2,1,p.J);
- // Legs: armored greaves, knee guards, and dark boots.
- map(4,20,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG','DDDD']);
- map(20,52,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG','DDDD']);
+ // FULL LEG UV MAPS: paint the front, back, inner, outer, top and bottom
+ // faces on both legs, with matching clan colors and proper knight greaves.
+ function legFace(x,y,base,highlight,shade){
+  px(x,y,4,12,base);
+  px(x+1,y+2,1,5,highlight);
+  px(x,y,4,2,p.G);                 // gold upper-leg trim
+  px(x,y+4,4,2,shade);             // knee seam
+  px(x+1,y+4,2,1,p.J);             // small knee jewel
+  px(x,y+7,4,1,p.D);
+  px(x,y+8,4,3,p.D);               // dark boot
+  px(x+1,y+8,1,2,p.S);
+  px(x,y+11,4,1,p.G);              // boot sole trim
+ }
+ function paintLeg(xTop,yTop,xSide,ySide,overlay=false){
+  const base=overlay?p.B:p.S,hi=overlay?p.L:p.B,shade=p.D;
+  px(xTop,yTop,4,4,base);px(xTop+1,yTop,2,1,p.G);px(xTop,yTop+3,4,1,shade);
+  px(xTop+4,yTop,4,4,shade);px(xTop+5,yTop,2,1,p.G);
+  for(let face=0;face<4;face++)legFace(xSide+face*4,ySide,base,hi,shade);
+ }
+ // Base right and left legs.
+ paintLeg(4,16,0,20,false);
+ paintLeg(20,48,16,52,false);
+ // Raised outer-layer armor on both legs.
+ paintLeg(4,32,0,36,true);
+ paintLeg(4,48,0,52,true);
  // Outer chestplate and cape details. Keep these shapes transparent outside their trim.
  map(20,36,[
   'GGGGGGGG','G......G','D......D','D..JJ..D',
