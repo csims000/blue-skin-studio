@@ -238,7 +238,7 @@ async function extractPackSkin(pack){
    const config=JSON.parse(await skinJsonFile.async('string'));
    skin=(config.skins||[])[0]||null;
    if(skin&&skin.texture){
-    const wanted=skin.texture.replace(/\\\\/g,'/').replace(/^\\/+/, '').toLowerCase();
+    const wanted=skin.texture.split(String.fromCharCode(92)).join('/').replace(/^\/+/, '').toLowerCase();
     textureFile=zip.file(wanted)||files.find(x=>x.name.toLowerCase()===wanted)||files.find(x=>x.name.toLowerCase().endsWith('/'+wanted))||files.find(x=>x.name.toLowerCase().split('/').pop()===wanted.split('/').pop());
    }
   }catch(e){console.warn('Could not read skins.json',e)}
