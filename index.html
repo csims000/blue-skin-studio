@@ -37,24 +37,53 @@ const cleanName=s=>(s||'Minecraft Skin').trim().replace(/[\\/:*?"<>|]/g,'').slic
 rotateToggle.addEventListener('click',()=>{if(!skinViewer)return;rotating=!rotating;skinViewer.autoRotate=rotating;rotateToggle.textContent=rotating?'Rotation: On':'Rotation: Paused'});
 async function loadSkinFile(f,label){if(!f)return;if(f.type!=='image/png'){alert('Please choose a PNG file.');return}const bmp=await createImageBitmap(f);const standard=(bmp.width===64&&bmp.height===64)||(bmp.width===64&&bmp.height===32)||(bmp.width===128&&bmp.height===128);const largeSquare=bmp.width===bmp.height&&bmp.width>128&&bmp.width<=2048&&bmp.width%64===0;if(!standard&&!largeSquare){alert('This PNG is '+bmp.width+'×'+bmp.height+'. Use 64×64, 64×32 legacy, 128×128, or a square texture up to 2048×2048 whose size is a multiple of 64.');return}let finalBlob=f,finalBmp=bmp,sourceNote='';if(largeSquare){const target=document.createElement('canvas');target.width=128;target.height=128;const ctx=target.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,128,128);ctx.drawImage(bmp,0,0,128,128);finalBlob=await new Promise(resolve=>target.toBlob(resolve,'image/png'));if(!finalBlob){alert('Could not resize this PNG.');return}finalBmp=await createImageBitmap(finalBlob);sourceNote=' · resized from '+bmp.width+'×'+bmp.height}const buf=await finalBlob.arrayBuffer();skinBlob=finalBlob;skinBytes=new Uint8Array(buf);skinImage=finalBmp;if(skinUrl)URL.revokeObjectURL(skinUrl);skinUrl=URL.createObjectURL(finalBlob);const oldImg=preview.querySelector('img');if(oldImg)oldImg.remove();show3DSkin();statusEl.textContent=(label||f.name)+sourceNote;dimEl.textContent=finalBmp.width+' × '+finalBmp.height+(finalBmp.width===128?' · high-res':'');setEnabled(true);const chip=document.createElement('span');chip.className='chip';chip.textContent=cleanName(nameInput.value)+' · '+finalBmp.width+'×'+finalBmp.height+sourceNote;gallery.replaceChildren(chip)}
 document.getElementById('chooseSkin').addEventListener('click',()=>fileInput.click());fileInput.addEventListener('change',async()=>{const f=fileInput.files?.[0];if(f)await loadSkinFile(f,f.name)});
-function makePreset(kind){const c=document.createElement('canvas');c.width=64;c.height=64;const x=c.getContext('2d');const palettes={blue:{base:'#174d86',light:'#3d91d8',dark:'#102d52',metal:'#e7bd55',skin:'#c88f68',hair:'#34251f'},red:{base:'#8d2634',light:'#d64b4b',dark:'#4b1724',metal:'#d5b8a0',skin:'#c58b68',hair:'#39251e'},emerald:{base:'#17634e',light:'#55b58a',dark:'#103c32',metal:'#c7a85b',skin:'#b97e59',hair:'#34251f'},shadow:{base:'#303447',light:'#666b8b',dark:'#171a29',metal:'#a9a9c4',skin:'#b98468',hair:'#201d28'},frost:{base:'#5b9db7',light:'#c7eff7',dark:'#315e78',metal:'#e7f5f7',skin:'#c99170',hair:'#554333'},gold:{base:'#9a6c20',light:'#e6bd55',dark:'#403323',metal:'#f2d77e',skin:'#c58b68',hair:'#34251f'}};const p=palettes[kind];const rect=(a,b,w,h,col)=>{x.fillStyle=col;x.fillRect(a,b,w,h)};const face=(a,b,w,h,col)=>{rect(a,b,w,h,col);rect(a,b,w,1,p.light);rect(a,b+h-1,w,1,p.dark)}; // Head faces and top
-face(8,8,8,8,p.skin);face(24,8,8,8,p.skin);face(0,8,8,8,p.skin);face(16,8,8,8,p.skin);rect(8,8,8,2,p.hair);rect(8,8,2,8,p.hair);rect(14,8,2,8,p.hair);rect(9,12,2,1,'#243447');rect(13,12,2,1,'#243447');rect(10,15,4,1,'#754b3b');rect(8,0,8,8,p.dark);rect(8,0,8,2,p.metal);rect(0,8,8,8,p.dark);rect(16,8,8,8,p.dark);rect(24,8,8,8,p.dark);rect(8,16,8,4,p.dark);
-// torso
-face(20,20,8,12,p.base);face(32,20,8,12,p.dark);face(16,20,4,12,p.dark);face(28,20,4,12,p.light);rect(20,20,8,2,p.metal);rect(23,24,2,5,p.metal);rect(20,30,8,2,p.dark);
-// arms
-face(44,20,4,12,p.base);face(52,20,4,12,p.dark);face(40,20,4,12,p.light);face(48,20,4,12,p.dark);rect(44,20,4,3,p.metal);rect(44,29,4,3,p.dark);
-// legs
-face(4,20,4,12,p.dark);face(12,20,4,12,p.dark);face(0,20,4,12,p.base);face(8,20,4,12,p.base);rect(4,20,4,3,p.metal);rect(4,29,4,3,p.dark);
-// second arm and leg UV regions
-face(36,52,4,12,p.base);face(44,52,4,12,p.dark);face(32,52,4,12,p.light);face(40,52,4,12,p.dark);face(20,52,4,12,p.dark);face(28,52,4,12,p.dark);face(16,52,4,12,p.base);face(24,52,4,12,p.base);rect(20,52,4,3,p.metal);
-// armor accents differ by preset
-if(kind==='blue'){rect(20,22,8,2,'#e9c65d');rect(22,24,4,4,'#225f9c');rect(8,0,8,3,'#f3d46f')}
-if(kind==='red'){rect(20,22,8,2,'#f0c1a1');rect(23,24,2,6,'#641d29')}
-if(kind==='emerald'){rect(20,22,8,2,'#d8c27a');rect(22,24,4,4,'#1d785e')}
-if(kind==='shadow'){rect(8,8,8,2,'#191a2b');rect(20,22,8,2,'#a9a9c4')}
-if(kind==='frost'){rect(20,22,8,2,'#e5fbff');rect(23,24,2,5,'#b7e9f5')}
-if(kind==='gold'){rect(20,22,8,2,'#f8df8b');rect(22,24,4,4,'#76501c')}
-return c}
+function makePreset(kind){
+ const c=document.createElement('canvas');c.width=64;c.height=64;const x=c.getContext('2d');
+ const P={
+ blue:['#174d86','#4ca7ed','#0b2749','#f0cb67','#72d7ff','#c88f68','#34251f'],
+ red:['#8d2634','#e45a50','#401421','#e1c5a4','#ff9b62','#c58b68','#39251e'],
+ emerald:['#17634e','#58c69a','#0b352d','#d7bd72','#9be58c','#b97e59','#34251f'],
+ shadow:['#303447','#777c9d','#121522','#b9b9d1','#9c8cff','#b98468','#201d28'],
+ frost:['#5b9db7','#d6f7ff','#294d68','#f1fdff','#7ee8ff','#c99170','#554333'],
+ gold:['#9a6c20','#f0cb62','#332719','#ffe69a','#fff0bd','#c58b68','#34251f']
+ }[kind]||['#174d86','#4ca7ed','#0b2749','#f0cb67','#72d7ff','#c88f68','#34251f'];
+ const [b,l,d,m,a,s,h]=P, R=(X,Y,W,H,C)=>{x.fillStyle=C;x.fillRect(X,Y,W,H)}, F=(X,Y,W,H,C)=>{R(X,Y,W,H,C);R(X,Y,W,1,l);R(X,Y+H-1,W,1,d)};
+ // Head, hair and face details
+ F(8,8,8,8,s);F(24,8,8,8,s);F(0,8,8,8,d);F(16,8,8,8,d);
+ R(8,8,8,3,h);R(8,8,2,8,h);R(14,8,2,8,h);R(9,12,2,1,'#26364a');R(13,12,2,1,'#26364a');R(10,15,4,1,'#754b3b');
+ R(8,0,8,8,d);R(8,0,8,2,m);R(16,0,8,8,d);R(24,0,8,8,d);
+ // Main body UV faces
+ F(20,20,8,12,b);F(32,20,8,12,d);F(16,20,4,12,d);F(28,20,4,12,l);
+ F(44,20,4,12,b);F(52,20,4,12,d);F(40,20,4,12,l);F(48,20,4,12,d);
+ F(4,20,4,12,d);F(12,20,4,12,d);F(0,20,4,12,b);F(8,20,4,12,b);
+ F(36,52,4,12,b);F(44,52,4,12,d);F(32,52,4,12,l);F(40,52,4,12,d);
+ F(20,52,4,12,d);F(28,52,4,12,d);F(16,52,4,12,b);F(24,52,4,12,b);
+ // Detailed chest plate, crest, belt and pauldrons
+ R(20,20,8,2,m);R(20,22,1,7,d);R(27,22,1,7,d);R(21,23,6,5,l);R(22,24,4,3,b);R(23,24,2,3,a);
+ R(20,28,8,2,d);R(20,30,8,2,m);R(23,30,2,2,d);
+ R(16,20,4,3,m);R(28,20,4,3,m);R(16,23,4,2,a);R(28,23,4,2,a);
+ R(44,20,4,3,m);R(52,20,4,3,m);R(40,24,4,2,a);R(48,24,4,2,a);
+ // Gauntlets, knee guards and boot trim
+ R(44,28,4,2,m);R(52,28,4,2,m);R(4,26,4,2,a);R(12,26,4,2,a);
+ R(0,29,4,3,d);R(8,29,4,3,d);R(4,30,4,2,m);R(12,30,4,2,m);
+ R(16,52,4,2,m);R(24,52,4,2,m);R(20,58,4,2,a);R(28,58,4,2,a);
+ // Outer layer overlays: helmet, mantle, shoulder caps, arm and leg guards
+ R(40,8,8,8,d);R(40,8,8,2,m);R(40,10,8,2,b);R(40,12,8,2,d);R(40,14,8,2,m);
+ R(32,8,8,8,d);R(48,8,8,8,d);R(56,8,8,8,b);
+ R(20,36,8,12,d);R(20,36,8,2,m);R(21,38,6,7,b);R(22,39,4,4,l);R(23,40,2,2,a);R(20,46,8,2,m);
+ R(16,36,4,12,d);R(28,36,4,12,d);R(16,36,4,3,m);R(28,36,4,3,m);
+ R(44,36,4,12,d);R(52,36,4,12,d);R(44,36,4,3,m);R(52,36,4,3,m);
+ R(4,36,4,12,d);R(12,36,4,12,d);R(4,36,4,3,m);R(12,36,4,3,m);
+ R(4,44,4,3,b);R(12,44,4,3,b);
+ // Distinct clan insignias and signature armor details
+ if(kind==='blue'){R(22,22,4,1,'#fff0a2');R(23,24,2,4,m);R(22,26,4,1,'#fff0a2');R(40,8,8,2,'#ffe69a');R(42,10,4,2,l);R(43,12,2,2,m);R(20,38,2,5,a);R(26,38,2,5,a)}
+ else if(kind==='red'){R(20,22,8,2,a);R(22,24,4,5,'#641d29');R(23,25,2,3,m);R(40,10,8,2,a);R(42,12,4,2,l);R(20,38,8,2,a);R(44,24,4,3,d);R(52,24,4,3,d)}
+ else if(kind==='emerald'){R(22,22,4,2,m);R(23,24,2,5,a);R(21,26,6,1,m);R(40,8,8,2,a);R(42,10,4,4,b);R(43,11,2,2,m);R(20,38,2,6,a);R(26,38,2,6,a)}
+ else if(kind==='shadow'){R(8,8,8,4,d);R(9,12,6,2,a);R(22,22,4,2,a);R(23,24,2,5,d);R(40,8,8,8,'#171a29');R(42,10,4,2,l);R(43,13,2,1,a);R(20,38,8,2,l);R(44,24,4,3,a);R(52,24,4,3,a)}
+ else if(kind==='frost'){R(20,22,8,2,m);R(22,24,4,5,d);R(23,24,2,4,a);R(40,8,8,2,m);R(42,10,4,4,a);R(20,38,8,2,m);R(16,22,4,3,l);R(28,22,4,3,l)}
+ else if(kind==='gold'){R(20,22,8,2,a);R(22,24,4,5,d);R(23,24,2,4,b);R(40,8,8,2,a);R(42,10,4,4,b);R(43,12,2,2,d);R(20,38,8,2,a);R(16,22,4,3,b);R(28,22,4,3,b)}
+ return c;
+}
 presetGrid.addEventListener('click',async e=>{const btn=e.target.closest('[data-preset]');if(!btn)return;const kind=btn.dataset.preset;const names={blue:'Blue Clan King',red:'Red Warrior',emerald:'Emerald Ranger',shadow:'Shadow Rogue',frost:'Frost Guard',gold:'Golden Knight'};const canvas=makePreset(kind);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));nameInput.value=names[kind];const file=new File([blob],names[kind].replace(/ /g,'_')+'.png',{type:'image/png'});await loadSkinFile(file,names[kind]+' · Studio preset')});
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}pngBtn.addEventListener('click',()=>{if(skinBlob)download(skinBlob,cleanName(nameInput.value)+'.png')});
 function uuid(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})}function crc32(bytes){let c=-1;for(const b of bytes){c^=b;for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xedb88320:0)}return(c^-1)>>>0}function u16(v){return[v&255,(v>>>8)&255]}function u32(v){return[v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]}
