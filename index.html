@@ -122,22 +122,37 @@ function makePreset(kind){
  px(52,52,4,2,p.G);px(53,54,2,1,p.J);
  // FULL LEG UV MAPS: paint the front, back, inner, outer, top and bottom
  // faces on both legs, with matching clan colors and proper knight greaves.
- function legFace(x,y,base,highlight,shade){
-  px(x,y,4,12,base);
-  px(x+1,y+2,1,5,highlight);
-  px(x,y,4,2,p.G);                 // gold upper-leg trim
-  px(x,y+4,4,2,shade);             // knee seam
-  px(x+1,y+4,2,1,p.J);             // small knee jewel
-  px(x,y+7,4,1,p.D);
-  px(x,y+8,4,3,p.D);               // dark boot
-  px(x+1,y+8,1,2,p.S);
-  px(x,y+11,4,1,p.G);              // boot sole trim
+ function legFace(x,y,base,highlight,shade,face,overlay){
+  // Medieval leg armor: quilted cloth, chainmail, articulated plate and leather boots.
+  px(x,y,4,12,overlay?highlight:base);
+  // Mail/cloth texture beneath the plate.
+  for(let r=2;r<4;r++)for(let col=0;col<4;col++)if((r+col)%2===0)px(x+col,y+r,1,1,p.D);
+  // Reinforced upper-thigh band and tiny rivets.
+  px(x,y,4,1,p.G);px(x,y+1,4,1,p.C);
+  px(x,y+1,1,1,p.G);px(x+3,y+1,1,1,p.G);
+  // Raised knee cop with a shaped center and side rivets.
+  px(x,y+4,4,1,p.D);px(x+1,y+5,2,2,overlay?p.L:p.B);
+  px(x,y+5,1,2,p.G);px(x+3,y+5,1,2,p.G);
+  px(x+1,y+5,2,1,p.J);px(x+1,y+6,2,1,p.S);
+  // Fluted shin plate: a bright central ridge, darker bevels and side straps.
+  px(x,y+7,4,1,p.C);px(x+1,y+7,2,1,p.G);
+  px(x,y+8,1,2,p.D);px(x+3,y+8,1,2,p.D);
+  px(x+1,y+8,1,2,highlight);px(x+2,y+8,1,2,base);
+  // Leather ankle wrap, buckle and boot.
+  px(x,y+10,4,1,p.C);px(x+1,y+10,2,1,p.G);
+  px(x,y+11,4,1,p.D);px(x+1,y+11,2,1,p.G);
+  // Different side faces get small rivet/strap details instead of a flat repeat.
+  if(face===1||face===3){px(x,y+3,1,1,p.G);px(x+3,y+3,1,1,p.G);px(x,y+9,4,1,p.C);}
+  if(face===2){px(x+1,y+3,2,1,p.G);px(x+1,y+8,2,1,p.D);}
  }
  function paintLeg(xTop,yTop,xSide,ySide,overlay=false){
   const base=overlay?p.B:p.S,hi=overlay?p.L:p.B,shade=p.D;
-  px(xTop,yTop,4,4,base);px(xTop+1,yTop,2,1,p.G);px(xTop,yTop+3,4,1,shade);
-  px(xTop+4,yTop,4,4,shade);px(xTop+5,yTop,2,1,p.G);
-  for(let face=0;face<4;face++)legFace(xSide+face*4,ySide,base,hi,shade);
+  // Top and underside: layered greave caps with metal edging.
+  px(xTop,yTop,4,4,base);px(xTop,yTop,4,1,p.G);
+  px(xTop+1,yTop+1,2,2,hi);px(xTop+4,yTop,4,4,shade);
+  px(xTop+4,yTop,4,1,p.G);px(xTop+5,yTop+1,2,2,p.C);
+  // Four vertical faces: front, outer, back and inner.
+  for(let face=0;face<4;face++)legFace(xSide+face*4,ySide,base,hi,shade,face,overlay);
  }
  // Base right and left legs.
  paintLeg(4,16,0,20,false);
