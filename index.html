@@ -38,62 +38,97 @@ rotateToggle.addEventListener('click',()=>{if(!skinViewer)return;rotating=!rotat
 async function loadSkinFile(f,label){if(!f)return;if(f.type!=='image/png'){alert('Please choose a PNG file.');return}const bmp=await createImageBitmap(f);const standard=(bmp.width===64&&bmp.height===64)||(bmp.width===64&&bmp.height===32)||(bmp.width===128&&bmp.height===128);const largeSquare=bmp.width===bmp.height&&bmp.width>128&&bmp.width<=2048&&bmp.width%64===0;if(!standard&&!largeSquare){alert('This PNG is '+bmp.width+'×'+bmp.height+'. Use 64×64, 64×32 legacy, 128×128, or a square texture up to 2048×2048 whose size is a multiple of 64.');return}let finalBlob=f,finalBmp=bmp,sourceNote='';if(largeSquare){const target=document.createElement('canvas');target.width=128;target.height=128;const ctx=target.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,128,128);ctx.drawImage(bmp,0,0,128,128);finalBlob=await new Promise(resolve=>target.toBlob(resolve,'image/png'));if(!finalBlob){alert('Could not resize this PNG.');return}finalBmp=await createImageBitmap(finalBlob);sourceNote=' · resized from '+bmp.width+'×'+bmp.height}const buf=await finalBlob.arrayBuffer();skinBlob=finalBlob;skinBytes=new Uint8Array(buf);skinImage=finalBmp;if(skinUrl)URL.revokeObjectURL(skinUrl);skinUrl=URL.createObjectURL(finalBlob);const oldImg=preview.querySelector('img');if(oldImg)oldImg.remove();show3DSkin();statusEl.textContent=(label||f.name)+sourceNote;dimEl.textContent=finalBmp.width+' × '+finalBmp.height+(finalBmp.width===128?' · high-res':'');setEnabled(true);const chip=document.createElement('span');chip.className='chip';chip.textContent=cleanName(nameInput.value)+' · '+finalBmp.width+'×'+finalBmp.height+sourceNote;gallery.replaceChildren(chip)}
 document.getElementById('chooseSkin').addEventListener('click',()=>fileInput.click());fileInput.addEventListener('change',async()=>{const f=fileInput.files?.[0];if(f)await loadSkinFile(f,f.name)});
 function makePreset(kind){
- const c=document.createElement('canvas');c.width=64;c.height=64;const x=c.getContext('2d');
- const palettes={
- blue:{b:'#174d86',l:'#58b7ff',d:'#0a2748',m:'#f3ce70',a:'#75e0ff',s:'#c99170',h:'#34251f',cape:'#102f62',gem:'#64eaff'},
- red:{b:'#8c2434',l:'#ef6958',d:'#401421',m:'#e7c27b',a:'#ffad70',s:'#c58b68',h:'#34231e',cape:'#541824',gem:'#ffcf72'},
- emerald:{b:'#12614b',l:'#62d0a0',d:'#08372c',m:'#e7c66e',a:'#a4ef9c',s:'#bb805d',h:'#30231d',cape:'#0b4436',gem:'#9dffc0'},
- shadow:{b:'#303449',l:'#8589a8',d:'#111522',m:'#c5b8df',a:'#aa91ff',s:'#b98268',h:'#211d29',cape:'#171827',gem:'#c7a6ff'},
- frost:{b:'#579bb8',l:'#e0f8ff',d:'#294c68',m:'#f5ffff',a:'#8beaff',s:'#c99270',h:'#594534',cape:'#d4eff8',gem:'#8df5ff'},
- gold:{b:'#91651f',l:'#f4d16b',d:'#38291a',m:'#fff0a5',a:'#fff0bd',s:'#c58b68',h:'#35251e',cape:'#60451b',gem:'#fff1a0'}
+ const c=document.createElement('canvas');c.width=64;c.height=64;const ctx=c.getContext('2d');
+ const themes={
+ blue:{D:'#102b4d',S:'#1c4774',B:'#246ca8',L:'#54b4ee',G:'#f2ce70',H:'#d5a06e',K:'#38271f',J:'#62e4ff',C:'#102b59',W:'#d9edff'},
+ red:{D:'#401824',S:'#702332',B:'#a52e40',L:'#ed6557',G:'#e8c47b',H:'#c58d69',K:'#39241e',J:'#ffca65',C:'#531927',W:'#ffe1c2'},
+ emerald:{D:'#0a352c',S:'#145341',B:'#207b5d',L:'#65cda0',G:'#e7c66e',H:'#bd8866',K:'#30231e',J:'#a4f0a4',C:'#0b4538',W:'#e0f6dd'},
+ shadow:{D:'#151827',S:'#30354a',B:'#4b526d',L:'#9296b4',G:'#c7b9df',H:'#b98268',K:'#211c28',J:'#b99cff',C:'#1a1c2d',W:'#e3dfff'},
+ frost:{D:'#29485f',S:'#4e819b',B:'#75b6cf',L:'#dff8ff',G:'#f4ffff',H:'#d09b7b',K:'#594536',J:'#8cecff',C:'#c6e9f4',W:'#ffffff'},
+ gold:{D:'#3b2a19',S:'#70501c',B:'#a77a29',L:'#edc65b',G:'#fff0a5',H:'#c58b68',K:'#34231d',J:'#fff0a0',C:'#674719',W:'#fff7d7'}
  };
- const p=palettes[kind]||palettes.blue,{b,l,d,m,a,s,h,cape,gem}=p;
- const R=(X,Y,W,H,C)=>{x.fillStyle=C;x.fillRect(X,Y,W,H)};
- const face=(X,Y,W,H,C)=>{R(X,Y,W,H,C);R(X,Y,W,1,l);R(X,Y+H-1,W,1,d)};
- // Base head, face and hair
- face(8,8,8,8,s);face(24,8,8,8,s);R(8,8,8,3,h);R(8,8,2,8,h);R(14,8,2,8,h);
- R(9,12,2,1,'#26364a');R(13,12,2,1,'#26364a');R(10,15,4,1,'#754b3b');
- // Crowned helmet: gold band, raised points and central jewel on the head overlay
- R(40,8,8,8,d);R(40,8,8,2,m);R(40,10,8,2,b);R(40,12,8,4,d);
- R(40,8,1,4,m);R(47,8,1,4,m);R(41,7,2,2,m);R(44,7,2,2,m);
- R(42,9,1,2,gem);R(43,9,2,2,m);R(44,9,1,2,gem);
- // Helmet side and top trim
- R(32,8,8,8,d);R(32,8,8,2,m);R(48,8,8,8,d);R(48,8,8,2,m);
- R(40,0,8,8,d);R(40,0,8,2,m);R(41,2,6,2,b);R(42,3,4,2,gem);
- // Torso base front/back and side faces
- face(20,20,8,12,b);face(32,20,8,12,cape);face(16,20,4,12,d);face(28,20,4,12,l);
- face(44,20,4,12,b);face(52,20,4,12,d);face(40,20,4,12,l);face(48,20,4,12,d);
- // Arms and legs
- face(4,20,4,12,d);face(12,20,4,12,b);face(0,20,4,12,b);face(8,20,4,12,d);
- face(36,52,4,12,b);face(44,52,4,12,d);face(32,52,4,12,l);face(40,52,4,12,d);
- face(20,52,4,12,d);face(28,52,4,12,d);face(16,52,4,12,b);face(24,52,4,12,b);
- // Royal chest plate with layered gold edging and clan jewel
- R(20,20,8,2,m);R(20,22,1,7,d);R(27,22,1,7,d);R(21,23,6,5,l);
- R(22,24,4,3,b);R(23,24,2,3,gem);R(22,28,4,1,m);R(20,30,8,2,m);
- // Shoulder pauldrons, arm guards and gauntlets
- R(16,20,4,3,m);R(28,20,4,3,m);R(16,23,4,2,a);R(28,23,4,2,a);
- R(44,20,4,3,m);R(52,20,4,3,m);R(40,24,4,2,a);R(48,24,4,2,a);
- R(4,26,4,2,m);R(12,26,4,2,m);R(0,29,4,3,d);R(8,29,4,3,d);
- R(4,30,4,2,m);R(12,30,4,2,m);
- // Belt, royal clasp, greaves and boot trim
- R(20,29,8,2,d);R(23,29,2,2,m);R(24,29,1,1,gem);
- R(16,52,4,2,m);R(24,52,4,2,m);R(20,58,4,2,a);R(28,58,4,2,a);
- // Outer body armor and a flowing royal cape on the back
- R(20,36,8,12,d);R(20,36,8,2,m);R(21,38,6,7,b);R(22,39,4,4,l);
- R(23,40,2,2,gem);R(20,46,8,2,m);
- R(32,36,8,12,cape);R(32,36,8,2,m);R(33,38,6,8,cape);
- R(34,40,4,1,m);R(34,43,4,1,m);R(35,39,2,6,d);
- R(16,36,4,12,d);R(28,36,4,12,d);R(16,36,4,3,m);R(28,36,4,3,m);
- R(44,36,4,12,d);R(52,36,4,12,d);R(44,36,4,3,m);R(52,36,4,3,m);
- R(4,36,4,12,d);R(12,36,4,12,d);R(4,36,4,3,m);R(12,36,4,3,m);
- R(4,44,4,3,b);R(12,44,4,3,b);
- // Distinct royal crests and crown jewels for each kingdom
- if(kind==='blue'){R(23,24,2,4,'#fff0a2');R(22,26,4,1,'#fff0a2');R(42,9,4,2,'#fff0a2');R(35,40,2,4,a)}
- else if(kind==='red'){R(22,23,4,2,m);R(23,25,2,4,'#6e1727');R(42,9,4,2,'#ffcf72');R(35,40,2,4,a)}
- else if(kind==='emerald'){R(22,23,4,2,m);R(23,25,2,4,a);R(42,9,4,2,'#a4ef9c');R(35,40,2,4,l)}
- else if(kind==='shadow'){R(22,23,4,2,a);R(23,25,2,4,d);R(42,9,4,2,'#d5c5ff');R(35,40,2,4,a)}
- else if(kind==='frost'){R(22,23,4,2,m);R(23,25,2,4,a);R(42,9,4,2,'#ffffff');R(35,40,2,4,l)}
- else if(kind==='gold'){R(22,23,4,2,a);R(23,25,2,4,m);R(42,9,4,2,'#ffffff');R(35,40,2,4,m)}
+ const p=themes[kind]||themes.blue;
+ const paint={'.':null,D:p.D,S:p.S,B:p.B,L:p.L,G:p.G,H:p.H,K:p.K,J:p.J,C:p.C,W:p.W};
+ function map(x,y,rows){rows.forEach((row,yy)=>[...row].forEach((ch,xx)=>{const color=paint[ch];if(color)ctx.fillStyle=color,ctx.fillRect(x+xx,y+yy,1,1)}))}
+ function fill(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
+ // Head front: visible face, hairline, eyes and a small royal beard detail.
+ map(8,8,[
+  'KKKKKKKK','KHHHHHHK','HHHHHHHH','HHHHHHHH',
+  'HWHHWHHH','HHHHHHHH','HHHHHHHH','KKHKKHKK'
+ ]);
+ // Crown/helmet overlay front. The face remains visible below the crown.
+ map(40,8,[
+  '.G..G...',
+  'GGG.GGG.',
+  'GGGGGGGG',
+  'DSSSSSSD',
+  'D......D',
+  'D......D',
+  'D......D',
+  'DDDDDDDD'
+ ]);
+ // Crown jewel centered above the brow.
+ fill(43,9,2,1,p.J);fill(43,10,2,1,p.W);
+ // Helmet top and side panels, shaded as metal rather than random color blocks.
+ map(40,0,[
+  'DDDDDDDD','DGGGGGGD','DSBBBBSD','DSLLLLSD',
+  'DDDDDDDD','D......D','D......D','DDDDDDDD'
+ ]);
+ map(32,8,['DDDDDDDD','DGGGGGGD','DBBBBBBD','DBLLLLBD','DB....BD','DB....BD','DB....BD','DDDDDDDD']);
+ map(48,8,['DDDDDDDD','DGGGGGGD','DBBBBBBD','DBLLLLBD','DB....BD','DB....BD','DB....BD','DDDDDDDD']);
+ // Royal tunic and back of cape.
+ map(20,20,[
+  'GGGGGGGG','GDDDDDDG','DBBBBBBD','DBLJJLBD',
+  'DBLJJLBD','DBBBBBBD','DDBBBBDD','GGGGGGGG',
+  'DDGGGGDD','DDBBBBDD','DDDDDDDD','DDGGGGDD'
+ ]);
+ map(32,20,[
+  'GGGGGGGG','CCCCCCCC','CCLCCLCC','CCCCCCCC',
+  'CCJCCJCC','CCCCCCCC','CCCCCCCC','CCCCCCCC',
+  'CCGCCGCC','CCCCCCCC','CCCCCCCC','GGGGGGGG'
+ ]);
+ // Shoulder armor and arm plates, front and side UV faces.
+ map(44,20,[
+  'GGGG','GBBG','BLLB','BDDB','BDDB','BDDB',
+  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
+ ]);
+ map(4,20,[
+  'GGGG','GBBG','BLLB','BDDB','BDDB','BDDB',
+  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
+ ]);
+ map(36,52,[
+  'GGGG','GBBG','BLLB','BDDB','BDDB','BDDB',
+  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
+ ]);
+ // Greaves and boots.
+ map(20,52,[
+  'GGGG','GBBG','BDDB','BDDB','BDDB','BDDB',
+  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
+ ]);
+ // Over-armor: raised chest crest, belt and back-cape clasp.
+ map(20,36,[
+  'GGGGGGGG','GDDDDDDG','DBBBBBBD','DBLJJLBD',
+  'DBLJJLBD','DBBBBBBD','DDBBBBDD','GGGGGGGG',
+  'DDGGGGDD','DDDDDDDD','DDDDDDDD','GGGGGGGG'
+ ]);
+ map(32,36,[
+  'GGGGGGGG','CCCCCCCC','CC....CC','CC.JJ.CC',
+  'CC.JJ.CC','CC....CC','CCCCCCCC','CCCCCCCC',
+  'CCGGGGCC','CCCCCCCC','CCCCCCCC','GGGGGGGG'
+ ]);
+ // Add a distinct heraldic symbol to each king's chest and matching crown jewel.
+ const emblems={
+  blue:['...J....','..JJJ...','...J....','..JJJ...','...J....'],
+  red:['...J....','..JJJ...','.JJJJJ..','..JJJ...','...J....'],
+  emerald:['...J....','..JJJ...','.JJ.JJ..','..JJJ...','...J....'],
+  shadow:['...J....','..JJJ...','.J...J..','..JJJ...','...J....'],
+  frost:['...J....','..JJJ...','JJJJJJJJ','..JJJ...','...J....'],
+  gold:['...J....','..JJJ...','.JJJJJ..','..J.J...','...J....']
+ };
+ map(20,23,emblems[kind]||emblems.blue);
+ // Small color accents on the cape and boots make each king distinct at a glance.
+ fill(35,40,2,2,p.J);fill(35,44,2,1,p.G);
+ fill(21,60,2,1,p.G);fill(25,60,2,1,p.G);
  return c;
 }
 presetGrid.addEventListener('click',async e=>{const btn=e.target.closest('[data-preset]');if(!btn)return;const kind=btn.dataset.preset;const names={blue:'VEYRA Blue King',red:'VAZOR Red King',emerald:'Emerald King',shadow:'SHADE Shadow King',frost:'NEXUS Frost King',gold:'Golden King'};const canvas=makePreset(kind);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));nameInput.value=names[kind];const file=new File([blob],names[kind].replace(/ /g,'_')+'.png',{type:'image/png'});await loadSkinFile(file,names[kind]+' · Studio preset')});
