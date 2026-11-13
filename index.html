@@ -38,97 +38,83 @@ rotateToggle.addEventListener('click',()=>{if(!skinViewer)return;rotating=!rotat
 async function loadSkinFile(f,label){if(!f)return;if(f.type!=='image/png'){alert('Please choose a PNG file.');return}const bmp=await createImageBitmap(f);const standard=(bmp.width===64&&bmp.height===64)||(bmp.width===64&&bmp.height===32)||(bmp.width===128&&bmp.height===128);const largeSquare=bmp.width===bmp.height&&bmp.width>128&&bmp.width<=2048&&bmp.width%64===0;if(!standard&&!largeSquare){alert('This PNG is '+bmp.width+'×'+bmp.height+'. Use 64×64, 64×32 legacy, 128×128, or a square texture up to 2048×2048 whose size is a multiple of 64.');return}let finalBlob=f,finalBmp=bmp,sourceNote='';if(largeSquare){const target=document.createElement('canvas');target.width=128;target.height=128;const ctx=target.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,128,128);ctx.drawImage(bmp,0,0,128,128);finalBlob=await new Promise(resolve=>target.toBlob(resolve,'image/png'));if(!finalBlob){alert('Could not resize this PNG.');return}finalBmp=await createImageBitmap(finalBlob);sourceNote=' · resized from '+bmp.width+'×'+bmp.height}const buf=await finalBlob.arrayBuffer();skinBlob=finalBlob;skinBytes=new Uint8Array(buf);skinImage=finalBmp;if(skinUrl)URL.revokeObjectURL(skinUrl);skinUrl=URL.createObjectURL(finalBlob);const oldImg=preview.querySelector('img');if(oldImg)oldImg.remove();show3DSkin();statusEl.textContent=(label||f.name)+sourceNote;dimEl.textContent=finalBmp.width+' × '+finalBmp.height+(finalBmp.width===128?' · high-res':'');setEnabled(true);const chip=document.createElement('span');chip.className='chip';chip.textContent=cleanName(nameInput.value)+' · '+finalBmp.width+'×'+finalBmp.height+sourceNote;gallery.replaceChildren(chip)}
 document.getElementById('chooseSkin').addEventListener('click',()=>fileInput.click());fileInput.addEventListener('change',async()=>{const f=fileInput.files?.[0];if(f)await loadSkinFile(f,f.name)});
 function makePreset(kind){
- const c=document.createElement('canvas');c.width=64;c.height=64;const ctx=c.getContext('2d');
+ const c=document.createElement('canvas');c.width=64;c.height=64;
+ const ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;
  const themes={
- blue:{D:'#102b4d',S:'#1c4774',B:'#246ca8',L:'#54b4ee',G:'#f2ce70',H:'#d5a06e',K:'#38271f',J:'#62e4ff',C:'#102b59',W:'#d9edff'},
- red:{D:'#401824',S:'#702332',B:'#a52e40',L:'#ed6557',G:'#e8c47b',H:'#c58d69',K:'#39241e',J:'#ffca65',C:'#531927',W:'#ffe1c2'},
- emerald:{D:'#0a352c',S:'#145341',B:'#207b5d',L:'#65cda0',G:'#e7c66e',H:'#bd8866',K:'#30231e',J:'#a4f0a4',C:'#0b4538',W:'#e0f6dd'},
- shadow:{D:'#151827',S:'#30354a',B:'#4b526d',L:'#9296b4',G:'#c7b9df',H:'#b98268',K:'#211c28',J:'#b99cff',C:'#1a1c2d',W:'#e3dfff'},
- frost:{D:'#29485f',S:'#4e819b',B:'#75b6cf',L:'#dff8ff',G:'#f4ffff',H:'#d09b7b',K:'#594536',J:'#8cecff',C:'#c6e9f4',W:'#ffffff'},
- gold:{D:'#3b2a19',S:'#70501c',B:'#a77a29',L:'#edc65b',G:'#fff0a5',H:'#c58b68',K:'#34231d',J:'#fff0a0',C:'#674719',W:'#fff7d7'}
+  blue:{D:'#102b4d',S:'#1c4774',B:'#246ca8',L:'#54b4ee',G:'#f2ce70',H:'#d5a06e',K:'#38271f',J:'#62e4ff',C:'#102b59',W:'#d9edff'},
+  red:{D:'#401824',S:'#702332',B:'#a52e40',L:'#ed6557',G:'#e8c47b',H:'#c58d69',K:'#39241e',J:'#ffca65',C:'#531927',W:'#ffe1c2'},
+  emerald:{D:'#0a352c',S:'#145341',B:'#207b5d',L:'#65cda0',G:'#e7c66e',H:'#bd8866',K:'#30231e',J:'#a4f0a4',C:'#0b4538',W:'#e0f6dd'},
+  shadow:{D:'#151827',S:'#30354a',B:'#4b526d',L:'#9296b4',G:'#c7b9df',H:'#b98268',K:'#211c28',J:'#b99cff',C:'#1a1c2d',W:'#e3dfff'},
+  frost:{D:'#29485f',S:'#4e819b',B:'#75b6cf',L:'#dff8ff',G:'#f4ffff',H:'#d09b7b',K:'#594536',J:'#8cecff',C:'#c6e9f4',W:'#ffffff'},
+  gold:{D:'#3b2a19',S:'#70501c',B:'#a77a29',L:'#edc65b',G:'#fff0a5',H:'#c58b68',K:'#34231d',J:'#fff0a0',C:'#674719',W:'#fff7d7'}
  };
  const p=themes[kind]||themes.blue;
- const paint={'.':null,D:p.D,S:p.S,B:p.B,L:p.L,G:p.G,H:p.H,K:p.K,J:p.J,C:p.C,W:p.W};
- function map(x,y,rows){rows.forEach((row,yy)=>[...row].forEach((ch,xx)=>{const color=paint[ch];if(color)ctx.fillStyle=color,ctx.fillRect(x+xx,y+yy,1,1)}))}
- function fill(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
- // Head front: visible face, hairline, eyes and a small royal beard detail.
+ const color={'.':null,D:p.D,S:p.S,B:p.B,L:p.L,G:p.G,H:p.H,K:p.K,J:p.J,C:p.C,W:p.W};
+ function px(x,y,w,h,v){ctx.fillStyle=v;ctx.fillRect(x,y,w,h)}
+ function map(x,y,rows){rows.forEach((r,yy)=>[...r].forEach((ch,xx)=>{if(color[ch])px(x+xx,y+yy,1,1,color[ch])}))}
+ // HEAD: skin, swept hair, eyes, nose and a short beard.
+ px(8,8,8,8,p.H);
  map(8,8,[
-  'KKKKKKKK','KHHHHHHK','HHHHHHHH','HHHHHHHH',
+  'KKKKKKKK','KKKKKKKK','KHHHHHHK','HHHHHHHH',
   'HWHHWHHH','HHHHHHHH','HHHHHHHH','KKHKKHKK'
  ]);
- // Crown/helmet overlay front. The face remains visible below the crown.
+ px(10,12,1,1,p.D);px(14,12,1,1,p.D);
+ px(12,14,1,1,p.K);px(11,15,3,1,p.K);
+ // Hair cap on the top and rear of the head.
+ map(8,0,['KKKKKKKK','KKKKKKKK','KKKKKKKK','KSSSSSSK','KDDDDDDK','........','........','........']);
+ map(24,8,['KKKKKKKK','KSSSSSSK','KDDDDDDK','KDDDDDDK','KDDDDDDK','KDDDDDDK','KDDDDDDK','KKKKKKKK']);
+ // Crown overlay: gold band, raised points, jewel, and dark underside.
  map(40,8,[
-  '.G..G...',
-  'GGG.GGG.',
-  'GGGGGGGG',
-  'DSSSSSSD',
-  'D......D',
-  'D......D',
-  'D......D',
-  'DDDDDDDD'
+  '.G..G..G.','GGGGGGGG','GGGGGGGG','DSSSSSSD',
+  'D......D','D......D','D......D','DDDDDDDD'
  ]);
- // Crown jewel centered above the brow.
- fill(43,9,2,1,p.J);fill(43,10,2,1,p.W);
- // Helmet top and side panels, shaded as metal rather than random color blocks.
- map(40,0,[
-  'DDDDDDDD','DGGGGGGD','DSBBBBSD','DSLLLLSD',
-  'DDDDDDDD','D......D','D......D','DDDDDDDD'
- ]);
+ px(43,9,2,1,p.J);px(43,10,2,1,p.W);
+ // Crown top and side/back trim.
+ map(40,0,['G.G.G.G.','GGGGGGGG','DSSSSSSD','DBBBBBBD','D......D','D......D','D......D','DDDDDDDD']);
  map(32,8,['DDDDDDDD','DGGGGGGD','DBBBBBBD','DBLLLLBD','DB....BD','DB....BD','DB....BD','DDDDDDDD']);
  map(48,8,['DDDDDDDD','DGGGGGGD','DBBBBBBD','DBLLLLBD','DB....BD','DB....BD','DB....BD','DDDDDDDD']);
- // Royal tunic and back of cape.
+ // BODY front: dark royal tunic, bright shoulder line, chest plate and belt.
  map(20,20,[
-  'GGGGGGGG','GDDDDDDG','DBBBBBBD','DBLJJLBD',
-  'DBLJJLBD','DBBBBBBD','DDBBBBDD','GGGGGGGG',
-  'DDGGGGDD','DDBBBBDD','DDDDDDDD','DDGGGGDD'
- ]);
+  'GGGGGGGG','GSSSSSSG','SBBBBBBS','SLLLLLLS',
+  'SBBJJ BBS','SBBBBBBS','SSBBBBSS','DDGGGGDD',
+  'DDSSSSDD','DDSSSSDD','DDSSSSDD','DDDDDDDD'
+ ].map(r=>r.replace('JJ B','JJBB')));
+ // Back: full-length clan cape with gold piping and central stripe.
  map(32,20,[
-  'GGGGGGGG','CCCCCCCC','CCLCCLCC','CCCCCCCC',
-  'CCJCCJCC','CCCCCCCC','CCCCCCCC','CCCCCCCC',
-  'CCGCCGCC','CCCCCCCC','CCCCCCCC','GGGGGGGG'
+  'GGGGGGGG','CCCCCCCC','CCLCCLCC','CCLCCLCC',
+  'CCLCCLCC','CCJCCJCC','CCLCCLCC','CCLCCLCC',
+  'CCLCCLCC','CCLCCLCC','CCLCCLCC','GGGGGGGG'
  ]);
- // Shoulder armor and arm plates, front and side UV faces.
- map(44,20,[
-  'GGGG','GBBG','BLLB','BDDB','BDDB','BDDB',
-  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
- ]);
- map(4,20,[
-  'GGGG','GBBG','BLLB','BDDB','BDDB','BDDB',
-  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
- ]);
- map(36,52,[
-  'GGGG','GBBG','BLLB','BDDB','BDDB','BDDB',
-  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
- ]);
- // Greaves and boots.
- map(20,52,[
-  'GGGG','GBBG','BDDB','BDDB','BDDB','BDDB',
-  'BDDB','BDDB','BDDB','BGGB','GDDG','DDDD'
- ]);
- // Over-armor: raised chest crest, belt and back-cape clasp.
+ // Arms, both front faces, with shoulder caps and gauntlets.
+ map(44,20,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG']);
+ map(36,52,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG']);
+ // Legs: armored greaves, knee guards, and dark boots.
+ map(4,20,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG','DDDD']);
+ map(20,52,['GGGG','GBBG','BLLB','BDDB','BDDB','BDDB','BDDB','BDDB','BDDB','BGGB','GDDG','DDDD']);
+ // Outer chestplate and cape details. Keep these shapes transparent outside their trim.
  map(20,36,[
-  'GGGGGGGG','GDDDDDDG','DBBBBBBD','DBLJJLBD',
-  'DBLJJLBD','DBBBBBBD','DDBBBBDD','GGGGGGGG',
+  'GGGGGGGG','G......G','D......D','D..JJ..D',
+  'D.JJJJ.D','D..JJ..D','D......D','D......D',
   'DDGGGGDD','DDDDDDDD','DDDDDDDD','GGGGGGGG'
  ]);
  map(32,36,[
-  'GGGGGGGG','CCCCCCCC','CC....CC','CC.JJ.CC',
-  'CC.JJ.CC','CC....CC','CCCCCCCC','CCCCCCCC',
-  'CCGGGGCC','CCCCCCCC','CCCCCCCC','GGGGGGGG'
+  'GGGGGGGG','C......C','C......C','C......C',
+  'C..JJ..C','C......C','C......C','C......C',
+  'C......C','C......C','C......C','GGGGGGGG'
  ]);
- // Add a distinct heraldic symbol to each king's chest and matching crown jewel.
- const emblems={
-  blue:['...J....','..JJJ...','...J....','..JJJ...','...J....'],
+ // Clan crest: each kingdom has its own clear heraldic mark.
+ const crests={
+  blue:['...J....','..JJJ...','.JJJJJ..','..JJJ...','...J....'],
   red:['...J....','..JJJ...','.JJJJJ..','..JJJ...','...J....'],
   emerald:['...J....','..JJJ...','.JJ.JJ..','..JJJ...','...J....'],
   shadow:['...J....','..JJJ...','.J...J..','..JJJ...','...J....'],
   frost:['...J....','..JJJ...','JJJJJJJJ','..JJJ...','...J....'],
   gold:['...J....','..JJJ...','.JJJJJ..','..J.J...','...J....']
  };
- map(20,23,emblems[kind]||emblems.blue);
- // Small color accents on the cape and boots make each king distinct at a glance.
- fill(35,40,2,2,p.J);fill(35,44,2,1,p.G);
- fill(21,60,2,1,p.G);fill(25,60,2,1,p.G);
+ map(20,23,crests[kind]||crests.blue);
+ // Matching jewel accents on cape clasp and boot plates.
+ px(35,40,2,2,p.J);px(35,44,2,1,p.G);
+ px(5,29,2,1,p.G);px(21,61,2,1,p.G);
  return c;
 }
 presetGrid.addEventListener('click',async e=>{const btn=e.target.closest('[data-preset]');if(!btn)return;const kind=btn.dataset.preset;const names={blue:'VEYRA Blue King',red:'VAZOR Red King',emerald:'Emerald King',shadow:'SHADE Shadow King',frost:'NEXUS Frost King',gold:'Golden King'};const canvas=makePreset(kind);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));nameInput.value=names[kind];const file=new File([blob],names[kind].replace(/ /g,'_')+'.png',{type:'image/png'});await loadSkinFile(file,names[kind]+' · Studio preset')});
